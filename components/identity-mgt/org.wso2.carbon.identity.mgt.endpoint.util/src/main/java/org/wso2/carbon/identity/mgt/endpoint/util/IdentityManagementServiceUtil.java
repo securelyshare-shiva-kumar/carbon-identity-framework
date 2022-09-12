@@ -132,8 +132,10 @@ public class IdentityManagementServiceUtil {
                 contextURL = serviceContextURL.replace(IdentityUtil.getServicePath(), "");
                 this.serviceContextURL = serviceContextURL;
             }
-            log.debug("contextURL = " + contextURL);
-            log.debug("serviceContextURL = " + serviceContextURL);
+            if(log.isDebugEnabled()) {
+                log.debug("contextURL = " + contextURL);
+                log.debug("serviceContextURL = " + serviceContextURL);
+            }
         } catch (IOException e) {
             log.error("Failed to load service configurations.", e);
         } finally {
