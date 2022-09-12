@@ -125,10 +125,15 @@ public class IdentityManagementServiceUtil {
                     .APP_PASSWORD).toCharArray();
             String serviceContextURL = properties
                     .getProperty(IdentityManagementEndpointConstants.ServiceConfigConstants.SERVICE_CONTEXT_URL);
-            contextURL = serviceContextURL;
-            this.serviceContextURL = StringUtils.isBlank(serviceContextURL) ? IdentityUtil.getServerURL(
-                    IdentityUtil.getServicePath(), true, true) : serviceContextURL;
-
+            if(StringUtils.isBlank(serviceContextURL)) {
+                this.serviceContextURL = IdentityUtil.getServerURL(
+                    IdentityUtil.getServicePath(), true, true);
+            } else {
+                contextURL = serviceContextURL.replace(IdentityUtil.getServicePath(), "");
+                this.serviceContextURL = serviceContextURL;
+            }
+            log.debug("contextURL = " + contextURL);
+            log.debug("serviceContextURL = " + serviceContextURL);
         } catch (IOException e) {
             log.error("Failed to load service configurations.", e);
         } finally {
