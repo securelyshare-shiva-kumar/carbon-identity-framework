@@ -61,10 +61,31 @@ public class SessionNonceCookieUtil {
                                       AuthenticationContext context) {
 
         if (isNonceCookieEnabled()) {
+            removeExistingNonceCookies(request, response);
             String nonceId = UUIDGenerator.generateUUID();
             String cookieName = getNonceCookieName(context);
             FrameworkUtils.setCookie(request, response, cookieName, nonceId, null);
             context.setProperty(cookieName, nonceId);
+        }
+    }
+
+    /**
+     * Clear all existing session cookies in the browser.
+     *
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     */
+    private static void removeExistingNonceCookies(HttpServletRequest request, HttpServletResponse response) {
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            return;
+        }
+        for (Cookie cookie : cookies) {
+            String cookieName = cookie.getName();
+            if (StringUtils.isNotEmpty(cookieName) && cookieName.startsWith(NONCE_COOKIE)) {
+                FrameworkUtils.removeCookie(request, response, cookieName);
+            }
         }
     }
 
